@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: profile-webapp
+  name: profile-webapp
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: profile-webapp
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: profile-webapp
+    spec:
+      containers:
+      - image: openwebspace/profile-webapp:latest
+        name: webapp
+        imagePullPolicy: Always
+        resources: {}
+        ports:
+          - containerPort: 8080
+          
+status: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: profile-webapp
+  labels:
+    run: profile-webapp
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+  selector:
+    app: profile-webapp
+  type: LoadBalancer

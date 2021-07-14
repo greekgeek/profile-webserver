@@ -4,9 +4,11 @@ const path = require('path');
 const AppServer = express();
 const MongoClient = require('../db');
 const cors = require('cors');
-const MongoSever = 'portfolio-webapp.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@portfolio-webapp@';
-const uri = `mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@${MongoSever}`
-console.log(uri);
+let uri = `mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.MONGO_SERVER}`
+if (process.env.type === 'development') {
+    uri = `mongodb://${process.env.MONGO_SERVER}`
+}
+AppServer.use(function(req,res,next){setTimeout(next,1000)});
 AppServer.use(cors());
 AppServer.use(express.static(path.join(__dirname, 'build')));
 AppServer.use(bodyParser.json())

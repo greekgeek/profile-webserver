@@ -7,12 +7,19 @@ function MongoDBClient(params) {
     this.dbName = 'portfolio';
 }
 MongoDBClient.prototype.findQuery = async function (query, collection) {
-  const db = await this.connect();
-  const result = await db.collection(collection).find(query).toArray();
+  try {
+    var client = await this.connect();
+    const db = client.db(this.dbName);
+    var result = await db.collection(collection).find(query).toArray();
+  } catch(e) {
+  }
+  if (client) {
+    client.close()
+  }
   return result;
 }
 MongoDBClient.prototype.connect = async function() {
   const client = await MongoDB.connect(this.uri, { useUnifiedTopology: true });
-  return client.db(this.dbName);
+  return client;
 }
 module.exports = MongoDBClient;

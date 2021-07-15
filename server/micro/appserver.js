@@ -20,6 +20,30 @@ function initialize() {
         console.log('My site started at http://%s:%s', process.env.HOST, process.env.SERVER_PORT);
     });
     AppServer.get('/api/profile/:userID', async function (req, res) {
+        const query = [{
+            $match: {
+              userID: req.params.userID
+            },
+          }, {
+            $lookup: {
+              from: 'projects',
+              localField: 'userID',
+              foreignField: 'userID',
+              as: 'projects'
+            }
+          },
+          {
+            $sort: {
+              'tenure.from': 1
+            }
+          },{
+            $limit: 1
+          }
+        ];
+        const result = await MongoInstance.aggregateQuery(query, 'profile')
+        res.status(200).send({ result });
+    });
+    AppServer.get('/api/projects/:userID', async function (req, res) {
         console.log(req.params);
         const result = await MongoInstance.findQuery({ userID: req.params.userID }, 'profile')
         res.status(200).send({ result });

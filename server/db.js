@@ -16,6 +16,7 @@ MongoDBClient.prototype.aggregateQuery = async function(query, collection) {
     console.log('Error in Aggregate Query', e.message);
   }
   if (client) {
+    console.log('Closed Connections:: DB');
     client.close()
   }
   return result;
